@@ -3,6 +3,13 @@ const readTalker = require('./utils/readTalker');
 const validateEmail = require('./middlewares/validateEmail');
 const generateToken = require('./utils/generateToken');
 const validatePassword = require('./middlewares/validatePassword');
+const validateAuth = require('./middlewares/validateAuth');
+const validateName = require('./middlewares/validateName');
+const validateAge = require('./middlewares/validateAge');
+const validateWatchedAt = require('./middlewares/validateWatchedAt');
+const validateRate = require('./middlewares/validateRate');
+const validateTalk = require('./middlewares/validateTalk');
+const writeTalker = require('./utils/writeTalker');
 
 const app = express();
 app.use(express.json());
@@ -39,4 +46,20 @@ app.get('/talker/:id', async (req, res) => {
 app.post('/login', validateEmail, validatePassword, (req, res) => {
   const token = generateToken();
   res.status(200).json({ token });
+});
+
+app.post('/talker',
+  validateAuth,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate,
+  async (req, res) => {
+  const personSignup = req.body;
+  const updateData = await readTalker();
+  personSignup.id = updateData[updateData.length - 1].id + 1;
+
+  await writeTalker(personSignup);
+  res.status(201).json(personSignup);
 });
