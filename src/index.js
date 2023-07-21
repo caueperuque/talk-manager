@@ -28,6 +28,14 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
+app.get('/talker/search', validateAuth, async (req, res) => {
+  const { q } = req.query;
+  const talkers = await readTalker();
+  const filteredTalkers = talkers.filter((talker) => talker.name.includes(q));
+
+  res.status(200).json(filteredTalkers);
+});
+
 app.get('/talker', async (req, res) => {
   const talkers = await readTalker();
 
@@ -99,3 +107,4 @@ app.delete('/talker/:id', validateAuth, async (req, res) => {
   await deleteTalker(filteredTalkers);
   return res.status(204).json();
 });
+
