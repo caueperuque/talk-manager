@@ -107,4 +107,3 @@ app.delete('/talker/:id', validateAuth, async (req, res) => {
   await deleteTalker(filteredTalkers);
   return res.status(204).json();
 });
-
